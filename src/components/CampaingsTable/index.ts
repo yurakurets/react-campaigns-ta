@@ -1,0 +1,1 @@
+export {CampaignsTable} from './CampaignsTable';
