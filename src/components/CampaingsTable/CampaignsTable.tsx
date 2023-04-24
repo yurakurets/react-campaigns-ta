@@ -11,11 +11,16 @@ import {Container, TablePagination} from "@mui/material";
 
 import {ECampaignStatus, ICampaignsTableProps} from "./types";
 import {FilterBlock} from "./FilterBlock";
+import {isWithinInterval} from "../../utils/date";
 
 const DEFAULT_ROWS_PER_PAGE = 5;
 
 const StyledContainer = styled(Container)(({theme}) => ({
   padding: theme.spacing(2),
+}));
+
+const StyledTableCell = styled(TableCell)<{isActive: boolean}>(({theme: {palette}, isActive}) => ({
+  color: isActive ? palette.success.main : palette.error.main,
 }));
 
 export const CampaignsTable: React.FC<ICampaignsTableProps> = ({dateRange, rows, setDateRange}) => {
@@ -66,13 +71,6 @@ export const CampaignsTable: React.FC<ICampaignsTableProps> = ({dateRange, rows,
     [rows],
   );
 
-  const isCampaignActive = (start: string, end: string): boolean => {
-    const startDate = new Date(start);
-    const endDate = new Date(end);
-    const currentDate = new Date();
-    return startDate <= currentDate && currentDate <= endDate;
-  };
-
   return (
     <StyledContainer>
       <TableContainer component={Paper}>
@@ -94,11 +92,11 @@ export const CampaignsTable: React.FC<ICampaignsTableProps> = ({dateRange, rows,
                 <TableCell component="th" scope="row">
                   {campaign.name}
                 </TableCell>
-                <TableCell align="right">
-                  {isCampaignActive(campaign.startDate, campaign.endDate)
+                <StyledTableCell align="right" isActive={isWithinInterval(campaign.startDate, campaign.endDate)}>
+                  {isWithinInterval(campaign.startDate, campaign.endDate)
                     ? ECampaignStatus.active
                     : ECampaignStatus.inactive}
-                </TableCell>
+                </StyledTableCell>
                 <TableCell align="right">
                   {new Date(campaign.startDate).toLocaleDateString()}
                 </TableCell>

@@ -64,7 +64,7 @@ const campaigns: ICampaign[] = [
     "id": 8,
     "name": "Rhyzio",
     "startDate": "10/13/2017",
-    "endDate": "1/25/2018",
+    "endDate": "1/25/2024",
     "Budget": 272552
   },
   {
