@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 import {IFilterBlockProps, TFilters} from "./types";
 import {FilterDrawer} from "../FilterDrawer";
 import {INITIAL_DATE_RANGE} from "../App";
+import {DRAWER_ID} from "../FilterDrawer/FilterDrawer";
 
 const StyledFilterContainer = styled(Box)(({theme}) => ({
   display: 'flex',
@@ -60,6 +61,12 @@ const ClearFilterButton = styled(Button)(({theme}) => ({
   },
 }));
 
+const ClearAllFilterButton = styled(Button)(({theme}) => ({
+  minWidth: 'unset',
+  padding: 0,
+  color: theme.palette.text.primary,
+}));
+
 export const FilterBlock: React.FC<IFilterBlockProps> = ({
                                                            dateRange: {startDate, endDate},
                                                            setDateRange,
@@ -84,7 +91,13 @@ export const FilterBlock: React.FC<IFilterBlockProps> = ({
   return (
     <StyledFilterContainer>
       <StyledBox>
-        <Button onClick={handleOpenDrawer}>
+        <Button
+          aria-haspopup
+          aria-expanded={isDrawerOpen}
+          aria-label="Open popup with date range filter"
+          aria-controls={DRAWER_ID}
+          onClick={handleOpenDrawer}
+        >
           <FilterListIcon/>
         </Button>
         <FilterDrawer
@@ -94,25 +107,40 @@ export const FilterBlock: React.FC<IFilterBlockProps> = ({
         />
 
         {startDate && (
-          <FilterLabel>
+          <FilterLabel role="button">
             {`Since: ${dayjs(startDate).format('DD/MM/YYYY')}`}
-            <ClearFilterButton onClick={() => handleClearFilter('startDate')}>
+            <ClearFilterButton
+              aria-label="Clear start date filter"
+              onClick={() => handleClearFilter('startDate')}
+            >
               <StyledCloseIcon fontSize="small"/>
             </ClearFilterButton>
           </FilterLabel>
         )}
         {endDate && (
-          <FilterLabel>
+          <FilterLabel role="button">
             {`Until: ${dayjs(endDate).format('DD/MM/YYYY')}`}
-            <ClearFilterButton onClick={() => handleClearFilter('endDate')}>
+            <ClearFilterButton
+              aria-label="Clear end date filter"
+              onClick={() => handleClearFilter('endDate')}
+            >
               <StyledCloseIcon fontSize="small"/>
             </ClearFilterButton>
           </FilterLabel>
         )}
       </StyledBox>
-      {(startDate || endDate) && <FilterLabel onClick={handleClearAllFilters}>
-        Clear All
-      </FilterLabel>}
+      {(startDate || endDate) &&
+        (
+          <FilterLabel role="button">
+            <ClearAllFilterButton
+              aria-label="Clear all filters"
+              onClick={handleClearAllFilters}
+            >
+              Clear All
+            </ClearAllFilterButton>
+          </FilterLabel>
+        )
+      }
     </StyledFilterContainer>
   );
 };

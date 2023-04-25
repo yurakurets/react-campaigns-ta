@@ -105,6 +105,7 @@ export const CampaignsTable: React.FC<ICampaignsTableProps> = ({rows}) => {
         </TableBody>
       </Table>
       <TablePagination
+        aria-label="Table pagination"
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
         count={rows.length}

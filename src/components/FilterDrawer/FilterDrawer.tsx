@@ -11,6 +11,8 @@ import {INITIAL_DATE_RANGE} from "../App";
 
 export const DRAWER_WIDTH = 320;
 
+export const DRAWER_ID = 'Popup with date range filters'
+
 const StyledDrawer = styled(Drawer)(({theme}) => ({
   '& .MuiDrawer-paper': {
     width: '100%',
@@ -44,7 +46,7 @@ export const FilterDrawer: React.FC<IFilterDrawerProps> = ({
   }
 
   return (
-    <StyledDrawer variant="persistent" anchor="right" open={isOpen} onClose={onClose}>
+    <StyledDrawer variant="persistent" anchor="right" open={isOpen} onClose={onClose} id={DRAWER_ID}>
       <StyledIconButton onClick={onClose}>
         <ChevronRightIcon/>
       </StyledIconButton>

@@ -29,14 +29,16 @@ export const DateRange: React.FC<IDateRangeComponentProps> = ({ dateRange, setDa
   };
 
   return (
-    <StyledBox>
+    <StyledBox role="group">
       <DatePicker
+        aria-label="Start date filter"
         maxDate={dateRange.endDate ?? undefined}
         label="Start Date"
         value={dateRange.startDate}
         onChange={handleStartDateChange}
       />
       <DatePicker
+        aria-label="End date filter"
         minDate={dateRange.startDate ?? undefined}
         label="End Date"
         value={dateRange.endDate}
