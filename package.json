@@ -2,7 +2,7 @@
   "name": "react-campaigns-ta",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://yurakurets.github.io/",
+  "homepage": "https://yurakurets.github.io/react-campaigns-ta",
   "dependencies": {
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
