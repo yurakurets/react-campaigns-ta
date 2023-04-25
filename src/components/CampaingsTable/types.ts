@@ -4,7 +4,7 @@ import {TableCellProps} from "@mui/material/TableCell";
 import {IDateRange} from "../DateRange/types";
 
 export interface ICampaign {
-  id: number;
+  id: string;
   name: string;
   startDate: string;
   endDate: string;
