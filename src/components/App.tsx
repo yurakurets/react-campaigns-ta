@@ -10,7 +10,7 @@ import {Header} from "./Layout/Header";
 import {IDateRange} from "./DateRange/types";
 import {ICampaign} from "./CampaingsTable/types";
 
-const campaigns: ICampaign[] = [
+const INITIAL_CAMPAIGNS: ICampaign[] = [
   {
     "id": 1,
     "name": "Divavu",
@@ -90,15 +90,19 @@ export const INITIAL_DATE_RANGE = {
 
 export const App: React.FC = () => {
   const [dateRange, setDateRange] = useState<IDateRange>(INITIAL_DATE_RANGE);
+  const [campaigns, setCampaigns] = useState<ICampaign[]>(INITIAL_CAMPAIGNS);
+  const [nameFilter, setNameFilter] = useState<string>('');
+
+  const filteredCampaigns = campaigns.filter(({name}) => name.toLowerCase().includes(nameFilter))
 
   return (
     <ThemeProvider theme={theme}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <CssBaseline/>
-        <Header/>
+        <Header setNameFilter={setNameFilter}/>
         <CampaignsTable
           dateRange={dateRange}
-          rows={campaigns}
+          rows={filteredCampaigns}
           setDateRange={setDateRange}
         />
       </LocalizationProvider>

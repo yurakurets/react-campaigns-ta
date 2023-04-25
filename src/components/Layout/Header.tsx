@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {Dispatch, SetStateAction} from 'react';
 import {AppBar, Toolbar, Typography, Box, InputBase, alpha} from '@mui/material';
-import { styled } from '@mui/material/styles';
+import {styled} from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
 
 const StyledToolbar = styled(Toolbar)(() => ({
@@ -9,7 +9,7 @@ const StyledToolbar = styled(Toolbar)(() => ({
   alignItems: 'center',
 }))
 
-const SearchContainer = styled(Box)(({ theme }) => ({
+const SearchContainer = styled(Box)(({theme}) => ({
   display: 'flex',
   alignItems: 'center',
   borderRadius: 5,
@@ -23,7 +23,7 @@ const SearchContainer = styled(Box)(({ theme }) => ({
   },
 }));
 
-const SearchInput = styled(InputBase)(({ theme }) => ({
+const SearchInput = styled(InputBase)(({theme}) => ({
   marginLeft: theme.spacing(1),
   flexGrow: 1,
   fontSize: '1rem',
@@ -42,7 +42,15 @@ const SearchInput = styled(InputBase)(({ theme }) => ({
   }
 }));
 
-export const Header = () => {
+interface IHeaderProps {
+  setNameFilter: Dispatch<SetStateAction<string>>;
+}
+
+export const Header: React.FC<IHeaderProps> = ({setNameFilter}) => {
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNameFilter(event.target.value.toLowerCase());
+  }
+
   return (
     <AppBar position="static" color="primary">
       <StyledToolbar>
@@ -50,10 +58,11 @@ export const Header = () => {
           Campaigns
         </Typography>
         <SearchContainer>
-          <SearchIcon color="action" />
+          <SearchIcon color="action"/>
           <SearchInput
             placeholder="Search…"
-            inputProps={{ 'aria-label': 'Search' }}
+            inputProps={{'aria-label': 'Search'}}
+            onChange={handleSearchChange}
           />
         </SearchContainer>
       </StyledToolbar>

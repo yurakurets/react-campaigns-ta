@@ -1,5 +1,7 @@
-import {IDateRange} from "../DateRange/types";
 import {Dispatch, SetStateAction} from "react";
+import {TableCellProps} from "@mui/material/TableCell";
+
+import {IDateRange} from "../DateRange/types";
 
 export interface ICampaign {
   id: number;
@@ -13,6 +15,16 @@ export interface ICampaignsTableProps {
   dateRange: IDateRange;
   rows: ICampaign[];
   setDateRange: Dispatch<SetStateAction<IDateRange>>;
+}
+
+export interface IPagination {
+  rowsPerPage: number,
+  page: number,
+  paddingHeight: number,
+}
+
+export interface IStyledTableCellProps extends TableCellProps {
+  isActive: boolean;
 }
 
 export enum ECampaignStatus {

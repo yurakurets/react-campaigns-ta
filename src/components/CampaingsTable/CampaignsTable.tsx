@@ -9,72 +9,62 @@ import Paper from '@mui/material/Paper';
 import {styled} from "@mui/material/styles";
 import {Container, TablePagination} from "@mui/material";
 
-import {ECampaignStatus, ICampaignsTableProps} from "./types";
+import {ECampaignStatus, ICampaignsTableProps, IPagination, IStyledTableCellProps} from "./types";
 import {FilterBlock} from "./FilterBlock";
 import {isWithinInterval} from "../../utils/date";
 
-const DEFAULT_ROWS_PER_PAGE = 5;
+const DEFAULT_PAGINATION = {
+  rowsPerPage: 5,
+  page: 0,
+  paddingHeight: 0,
+};
 
 const StyledContainer = styled(Container)(({theme}) => ({
   padding: theme.spacing(2),
 }));
 
-const StyledTableCell = styled(TableCell)<{isActive: boolean}>(({theme: {palette}, isActive}) => ({
-  color: isActive ? palette.success.main : palette.error.main,
-}));
+const StyledTableCell = styled(({isActive, ...props}: IStyledTableCellProps) => (
+  <TableCell {...props} />
+))<{ isActive: boolean }>(
+  ({theme: {palette}, isActive}) => ({
+    color: isActive ? palette.success.main : palette.error.main,
+  })
+);
 
 export const CampaignsTable: React.FC<ICampaignsTableProps> = ({dateRange, rows, setDateRange}) => {
-  const [rowsPerPage, setRowsPerPage] = useState<number>(DEFAULT_ROWS_PER_PAGE);
-  const [page, setPage] = useState(0);
-  const [visibleRows, setVisibleRows] = useState<ICampaignsTableProps['rows'] | null>(rows.slice(
-    0,
-    DEFAULT_ROWS_PER_PAGE,
-  ));
-  const [paddingHeight, setPaddingHeight] = React.useState(0);
+  const [pagination, setPagination] = useState<IPagination>(DEFAULT_PAGINATION);
 
   const handleChangePage = useCallback(
     (event: unknown, newPage: number) => {
-      setPage(newPage);
-
-      const updatedRows = rows.slice(
-        newPage * rowsPerPage,
-        newPage * rowsPerPage + rowsPerPage,
-      );
-      setVisibleRows(updatedRows);
-
       // Avoid a layout jump when reaching the last page with empty rows.
       const numEmptyRows =
-        newPage > 0 ? Math.max(0, (1 + newPage) * rowsPerPage - rows.length) : 0;
+        newPage > 0 ? Math.max(0, (1 + newPage) * pagination.rowsPerPage - rows.length) : 0;
 
       const newPaddingHeight = 53 * numEmptyRows;
-      setPaddingHeight(newPaddingHeight);
+      setPagination(prevState => ({...prevState, page: newPage, paddingHeight: newPaddingHeight}));
     },
-    [rowsPerPage, rows],
+    [pagination, rows],
   );
 
   const handleChangeRowsPerPage = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const updatedRowsPerPage = parseInt(event.target.value, 10);
 
-      setRowsPerPage(updatedRowsPerPage);
-      setPage(0);
-
-      const updatedRows = rows.slice(
-        0,
-        updatedRowsPerPage,
-      );
-      setVisibleRows(updatedRows);
-
       // There is no layout jump to handle on the first page.
-      setPaddingHeight(0);
+      setPagination({...DEFAULT_PAGINATION, rowsPerPage: updatedRowsPerPage});
     },
-    [rows],
+    [],
+  );
+
+  const visibleRows = rows.slice(
+    pagination.page * pagination.rowsPerPage,
+    pagination.page * pagination.rowsPerPage + pagination.rowsPerPage
   );
 
   return (
     <StyledContainer>
       <TableContainer component={Paper}>
-        <FilterBlock dateRange={dateRange} setDateRange={setDateRange} />
+        <FilterBlock dateRange={dateRange} setDateRange={setDateRange}/>
 
         <Table sx={{minWidth: 650}} aria-label="Campaigns table">
           <TableHead>
@@ -87,7 +77,7 @@ export const CampaignsTable: React.FC<ICampaignsTableProps> = ({dateRange, rows,
             </TableRow>
           </TableHead>
           <TableBody>
-            {visibleRows?.map((campaign) => (
+            {visibleRows.map((campaign) => (
               <TableRow key={campaign.id}>
                 <TableCell component="th" scope="row">
                   {campaign.name}
@@ -106,10 +96,10 @@ export const CampaignsTable: React.FC<ICampaignsTableProps> = ({dateRange, rows,
                 <TableCell align="right">{campaign.Budget}</TableCell>
               </TableRow>
             ))}
-            {paddingHeight > 0 && (
+            {pagination.paddingHeight > 0 && (
               <TableRow
                 style={{
-                  height: paddingHeight,
+                  height: pagination.paddingHeight,
                 }}
               >
                 <TableCell colSpan={5}/>
@@ -121,8 +111,8 @@ export const CampaignsTable: React.FC<ICampaignsTableProps> = ({dateRange, rows,
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
           count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
+          rowsPerPage={pagination.rowsPerPage}
+          page={pagination.page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
