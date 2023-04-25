@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Box, Button} from '@mui/material';
 import {styled} from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
@@ -63,9 +63,9 @@ const ClearFilterButton = styled(Button)(({theme}) => ({
 export const FilterBlock: React.FC<IFilterBlockProps> = ({
                                                            dateRange: {startDate, endDate},
                                                            setDateRange,
+                                                           isDrawerOpen,
+                                                           setIsDrawerOpen
                                                          }) => {
-  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
-
   const handleClearFilter = (filter: TFilters) => {
     setDateRange(prevState => (filter === 'startDate' ? {...prevState, startDate: null} : {
       ...prevState,

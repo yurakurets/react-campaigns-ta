@@ -3,16 +3,18 @@ import Drawer from '@mui/material/Drawer';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {styled} from '@mui/material/styles';
 import {IFilterDrawerProps} from "./types";
 import {DateRange} from "../DateRange";
 import {INITIAL_DATE_RANGE} from "../App";
 
+export const DRAWER_WIDTH = 320;
+
 const StyledDrawer = styled(Drawer)(({theme}) => ({
   '& .MuiDrawer-paper': {
     width: '100%',
-    maxWidth: 360,
+    maxWidth: DRAWER_WIDTH,
     padding: theme.spacing(3),
   },
 }));
@@ -24,7 +26,7 @@ const StyledBox = styled(Box)(({theme}) => ({
 }));
 
 const StyledIconButton = styled(IconButton)(({theme}) => ({
-  marginLeft: 'auto',
+  marginRight: 'auto',
   marginBottom: theme.spacing(1),
 }));
 
@@ -44,7 +46,7 @@ export const FilterDrawer: React.FC<IFilterDrawerProps> = ({
   return (
     <StyledDrawer variant="persistent" anchor="right" open={isOpen} onClose={onClose}>
       <StyledIconButton onClick={onClose}>
-        <CloseIcon/>
+        <ChevronRightIcon/>
       </StyledIconButton>
       <StyledBox>
         <DateRange dateRange={dateRange} setDateRange={setDateRange}/>

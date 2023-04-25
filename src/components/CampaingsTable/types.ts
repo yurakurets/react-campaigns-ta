@@ -35,4 +35,6 @@ export type TFilters = 'startDate' | 'endDate';
 export interface IFilterBlockProps {
   dateRange: IDateRange
   setDateRange: Dispatch<SetStateAction<IDateRange>>;
+  isDrawerOpen: boolean
+  setIsDrawerOpen: Dispatch<SetStateAction<boolean>>;
 }

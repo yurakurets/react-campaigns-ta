@@ -60,7 +60,7 @@ export const CampaignsTable: React.FC<ICampaignsTableProps> = ({rows}) => {
 
   return (
     <StyledContainer>
-      <Table sx={{minWidth: 650}} aria-label="Campaigns table">
+      <Table sx={{minWidth: 550}} aria-label="Campaigns table">
         <TableHead>
           <TableRow>
             <TableCell>Name</TableCell>
