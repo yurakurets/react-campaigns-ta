@@ -1,14 +1,18 @@
 import React, {useState} from 'react';
-import {ThemeProvider} from "@mui/material/styles";
-import {CssBaseline} from "@mui/material";
+import {styled, ThemeProvider} from "@mui/material/styles";
+import {Container, CssBaseline} from "@mui/material";
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
+import TableContainer from '@mui/material/TableContainer';
+import Paper from '@mui/material/Paper';
 
 import {theme} from "../mui-theme/theme";
 import {CampaignsTable} from "./CampaingsTable";
 import {Header} from "./Layout/Header";
 import {IDateRange} from "./DateRange/types";
 import {ICampaign} from "./CampaingsTable/types";
+import {isDateRangeWithinInterval, isEndDateAfterStartDate} from "../utils/date";
+import {FilterBlock} from "./CampaingsTable/FilterBlock";
 
 const INITIAL_CAMPAIGNS: ICampaign[] = [
   {
@@ -88,23 +92,35 @@ export const INITIAL_DATE_RANGE = {
   endDate: null,
 };
 
+const StyledContainer = styled(Container)(({theme}) => ({
+  padding: theme.spacing(2),
+}));
+
 export const App: React.FC = () => {
   const [dateRange, setDateRange] = useState<IDateRange>(INITIAL_DATE_RANGE);
   const [campaigns, setCampaigns] = useState<ICampaign[]>(INITIAL_CAMPAIGNS);
   const [nameFilter, setNameFilter] = useState<string>('');
 
-  const filteredCampaigns = campaigns.filter(({name}) => name.toLowerCase().includes(nameFilter))
+  const filteredCampaigns = campaigns.filter(({name, startDate, endDate}) => {
+    return (
+      isEndDateAfterStartDate({startDate, endDate}) &&
+      name.toLowerCase().includes(nameFilter) &&
+      isDateRangeWithinInterval({startDate, endDate, dateRange})
+    )
+  })
 
   return (
     <ThemeProvider theme={theme}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <CssBaseline/>
         <Header setNameFilter={setNameFilter}/>
-        <CampaignsTable
-          dateRange={dateRange}
-          rows={filteredCampaigns}
-          setDateRange={setDateRange}
-        />
+
+        <StyledContainer>
+          <TableContainer component={Paper}>
+            <FilterBlock dateRange={dateRange} setDateRange={setDateRange}/>
+            <CampaignsTable rows={filteredCampaigns}/>
+          </TableContainer>
+        </StyledContainer>
       </LocalizationProvider>
     </ThemeProvider>
   )

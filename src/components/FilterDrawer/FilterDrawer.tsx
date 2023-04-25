@@ -42,7 +42,7 @@ export const FilterDrawer: React.FC<IFilterDrawerProps> = ({
   }
 
   return (
-    <StyledDrawer anchor="right" open={isOpen} onClose={onClose}>
+    <StyledDrawer variant="persistent" anchor="right" open={isOpen} onClose={onClose}>
       <StyledIconButton onClick={onClose}>
         <CloseIcon/>
       </StyledIconButton>

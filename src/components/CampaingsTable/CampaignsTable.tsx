@@ -2,16 +2,13 @@ import React, {useCallback, useState} from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
 import {styled} from "@mui/material/styles";
 import {Container, TablePagination} from "@mui/material";
 
 import {ECampaignStatus, ICampaignsTableProps, IPagination, IStyledTableCellProps} from "./types";
-import {FilterBlock} from "./FilterBlock";
-import {isWithinInterval} from "../../utils/date";
+import {isCurrentDateWithinInterval} from "../../utils/date";
 
 const DEFAULT_PAGINATION = {
   rowsPerPage: 5,
@@ -31,7 +28,7 @@ const StyledTableCell = styled(({isActive, ...props}: IStyledTableCellProps) => 
   })
 );
 
-export const CampaignsTable: React.FC<ICampaignsTableProps> = ({dateRange, rows, setDateRange}) => {
+export const CampaignsTable: React.FC<ICampaignsTableProps> = ({rows}) => {
   const [pagination, setPagination] = useState<IPagination>(DEFAULT_PAGINATION);
 
   const handleChangePage = useCallback(
@@ -63,60 +60,59 @@ export const CampaignsTable: React.FC<ICampaignsTableProps> = ({dateRange, rows,
 
   return (
     <StyledContainer>
-      <TableContainer component={Paper}>
-        <FilterBlock dateRange={dateRange} setDateRange={setDateRange}/>
-
-        <Table sx={{minWidth: 650}} aria-label="Campaigns table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell align="right">Status</TableCell>
-              <TableCell align="right">Start Date</TableCell>
-              <TableCell align="right">End Date</TableCell>
-              <TableCell align="right">Budget (USD)</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {visibleRows.map((campaign) => (
-              <TableRow key={campaign.id}>
-                <TableCell component="th" scope="row">
-                  {campaign.name}
-                </TableCell>
-                <StyledTableCell align="right" isActive={isWithinInterval(campaign.startDate, campaign.endDate)}>
-                  {isWithinInterval(campaign.startDate, campaign.endDate)
-                    ? ECampaignStatus.active
-                    : ECampaignStatus.inactive}
-                </StyledTableCell>
-                <TableCell align="right">
-                  {new Date(campaign.startDate).toLocaleDateString()}
-                </TableCell>
-                <TableCell align="right">
-                  {new Date(campaign.endDate).toLocaleDateString()}
-                </TableCell>
-                <TableCell align="right">{campaign.Budget}</TableCell>
-              </TableRow>
-            ))}
-            {pagination.paddingHeight > 0 && (
-              <TableRow
-                style={{
-                  height: pagination.paddingHeight,
-                }}
+      <Table sx={{minWidth: 650}} aria-label="Campaigns table">
+        <TableHead>
+          <TableRow>
+            <TableCell>Name</TableCell>
+            <TableCell align="right">Status</TableCell>
+            <TableCell align="right">Start Date</TableCell>
+            <TableCell align="right">End Date</TableCell>
+            <TableCell align="right">Budget (USD)</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {visibleRows.map(({startDate, endDate, id, name, Budget}) => (
+            <TableRow key={id}>
+              <TableCell component="th" scope="row">
+                {name}
+              </TableCell>
+              <StyledTableCell
+                align="right"
+                isActive={isCurrentDateWithinInterval({startDate, endDate})}
               >
-                <TableCell colSpan={5}/>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={pagination.rowsPerPage}
-          page={pagination.page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </TableContainer>
+                {isCurrentDateWithinInterval({startDate, endDate})
+                  ? ECampaignStatus.active
+                  : ECampaignStatus.inactive}
+              </StyledTableCell>
+              <TableCell align="right">
+                {new Date(startDate).toLocaleDateString()}
+              </TableCell>
+              <TableCell align="right">
+                {new Date(endDate).toLocaleDateString()}
+              </TableCell>
+              <TableCell align="right">{Budget}</TableCell>
+            </TableRow>
+          ))}
+          {pagination.paddingHeight > 0 && (
+            <TableRow
+              style={{
+                height: pagination.paddingHeight,
+              }}
+            >
+              <TableCell colSpan={5}/>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={rows.length}
+        rowsPerPage={pagination.rowsPerPage}
+        page={pagination.page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
     </StyledContainer>
   );
 };

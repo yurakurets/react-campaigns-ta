@@ -12,9 +12,7 @@ export interface ICampaign {
 }
 
 export interface ICampaignsTableProps {
-  dateRange: IDateRange;
   rows: ICampaign[];
-  setDateRange: Dispatch<SetStateAction<IDateRange>>;
 }
 
 export interface IPagination {
