@@ -17,6 +17,7 @@ import {FilterBlock} from "./CampaingsTable/FilterBlock";
 import {IStyledBoxProps} from "./types";
 import {DRAWER_WIDTH} from "./FilterDrawer/FilterDrawer";
 import {logConsoleDescription} from "../utils/browser";
+import {MOCK_CAMPAIGNS} from "../utils/mock";
 
 logConsoleDescription();
 
@@ -43,7 +44,7 @@ const StyledIsDrawerOpenBox = styled(({isDrawerOpen, ...props}: IStyledBoxProps)
 export const App: React.FC = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [dateRange, setDateRange] = useState<IDateRange>(INITIAL_DATE_RANGE);
-  const [campaigns, setCampaigns] = useState<ICampaign[]>([]);
+  const [campaigns, setCampaigns] = useState<ICampaign[]>(MOCK_CAMPAIGNS);
   const [nameFilter, setNameFilter] = useState<string>('');
 
   const addCampaigns = useCallback((newCampaigns: ICampaign[]) => {
