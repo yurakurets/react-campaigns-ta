@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction} from 'react';
+import React from 'react';
 import {AppBar, Toolbar, Typography, Box, InputBase, alpha} from '@mui/material';
 import {styled} from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
@@ -43,7 +43,7 @@ const SearchInput = styled(InputBase)(({theme}) => ({
 }));
 
 interface IHeaderProps {
-  setNameFilter: Dispatch<SetStateAction<string>>;
+  setNameFilter(val: string): void;
 }
 
 export const Header: React.FC<IHeaderProps> = ({setNameFilter}) => {

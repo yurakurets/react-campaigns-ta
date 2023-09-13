@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback} from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -7,14 +7,9 @@ import TableRow from '@mui/material/TableRow';
 import {styled} from "@mui/material/styles";
 import {Container, TablePagination} from "@mui/material";
 
-import {ECampaignStatus, ICampaignsTableProps, IPagination, IStyledTableCellProps} from "./types";
+import {ECampaignStatus, ICampaignsTableProps, IStyledTableCellProps} from "./types";
 import {isCurrentDateWithinInterval} from "../../utils/date";
-
-const DEFAULT_PAGINATION = {
-  rowsPerPage: 5,
-  page: 0,
-  paddingHeight: 0,
-};
+import {DEFAULT_PAGINATION} from "../utils";
 
 const StyledContainer = styled(Container)(({theme}) => ({
   padding: theme.spacing(2),
@@ -28,9 +23,7 @@ const StyledTableCell = styled(({isActive, ...props}: IStyledTableCellProps) => 
   })
 );
 
-export const CampaignsTable: React.FC<ICampaignsTableProps> = ({rows}) => {
-  const [pagination, setPagination] = useState<IPagination>(DEFAULT_PAGINATION);
-
+export const CampaignsTable: React.FC<ICampaignsTableProps> = ({rows, pagination, setPagination}) => {
   const handleChangePage = useCallback(
     (event: unknown, newPage: number) => {
       // Avoid a layout jump when reaching the last page with empty rows.
@@ -40,7 +33,7 @@ export const CampaignsTable: React.FC<ICampaignsTableProps> = ({rows}) => {
       const newPaddingHeight = 53 * numEmptyRows;
       setPagination(prevState => ({...prevState, page: newPage, paddingHeight: newPaddingHeight}));
     },
-    [pagination, rows],
+    [pagination.rowsPerPage, rows.length, setPagination],
   );
 
   const handleChangeRowsPerPage = useCallback(
@@ -50,7 +43,7 @@ export const CampaignsTable: React.FC<ICampaignsTableProps> = ({rows}) => {
       // There is no layout jump to handle on the first page.
       setPagination({...DEFAULT_PAGINATION, rowsPerPage: updatedRowsPerPage});
     },
-    [],
+    [setPagination],
   );
 
   const visibleRows = rows.slice(

@@ -7,7 +7,7 @@ import dayjs from "dayjs";
 
 import {IFilterBlockProps, TFilters} from "./types";
 import {FilterDrawer} from "../FilterDrawer";
-import {INITIAL_DATE_RANGE} from "../App";
+import {INITIAL_DATE_RANGE} from "../utils";
 import {DRAWER_ID} from "../FilterDrawer/FilterDrawer";
 
 const StyledFilterContainer = styled(Box)(({theme}) => ({

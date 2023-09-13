@@ -11,20 +11,16 @@ import {theme} from "../mui-theme/theme";
 import {CampaignsTable} from "./CampaingsTable";
 import {Header} from "./Layout/Header";
 import {IDateRange} from "./DateRange/types";
-import {ICampaign} from "./CampaingsTable/types";
+import {ICampaign, IPagination} from "./CampaingsTable/types";
 import {isDateRangeWithinInterval, isEndDateAfterStartDate} from "../utils/date";
 import {FilterBlock} from "./CampaingsTable/FilterBlock";
 import {IStyledBoxProps} from "./types";
 import {DRAWER_WIDTH} from "./FilterDrawer/FilterDrawer";
 import {logConsoleDescription} from "../utils/browser";
 import {MOCK_CAMPAIGNS} from "../utils/mock";
+import {DEFAULT_PAGINATION, INITIAL_DATE_RANGE} from "./utils";
 
 logConsoleDescription();
-
-export const INITIAL_DATE_RANGE = {
-  startDate: null,
-  endDate: null,
-};
 
 const StyledContainer = styled(Container)(({theme}) => ({
   padding: theme.spacing(2),
@@ -46,6 +42,7 @@ export const App: React.FC = () => {
   const [dateRange, setDateRange] = useState<IDateRange>(INITIAL_DATE_RANGE);
   const [campaigns, setCampaigns] = useState<ICampaign[]>(MOCK_CAMPAIGNS);
   const [nameFilter, setNameFilter] = useState<string>('');
+  const [pagination, setPagination] = useState<IPagination>(DEFAULT_PAGINATION);
 
   const addCampaigns = useCallback((newCampaigns: ICampaign[]) => {
     const campaignsWithUniqueIds = newCampaigns.map((item) => ({...item, id: `${item.id}_${uuidv4()}`}));
@@ -66,12 +63,18 @@ export const App: React.FC = () => {
     )
   })
 
+  const handleSetFilter = (val: string) => {
+    // set page to the first to show proper search results
+    setPagination(prevState => ({...DEFAULT_PAGINATION, rowsPerPage: prevState.rowsPerPage}));
+    setNameFilter(val);
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <CssBaseline/>
         <StyledIsDrawerOpenBox isDrawerOpen={isDrawerOpen}>
-          <Header setNameFilter={setNameFilter}/>
+          <Header setNameFilter={handleSetFilter}/>
 
           <StyledContainer>
             <TableContainer component={Paper}>
@@ -81,7 +84,7 @@ export const App: React.FC = () => {
                 isDrawerOpen={isDrawerOpen}
                 setIsDrawerOpen={setIsDrawerOpen}
               />
-              <CampaignsTable rows={filteredCampaigns}/>
+              <CampaignsTable pagination={pagination} setPagination={setPagination} rows={filteredCampaigns}/>
             </TableContainer>
           </StyledContainer>
         </StyledIsDrawerOpenBox>

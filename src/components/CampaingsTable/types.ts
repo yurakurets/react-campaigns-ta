@@ -13,6 +13,8 @@ export interface ICampaign {
 
 export interface ICampaignsTableProps {
   rows: ICampaign[];
+  pagination: IPagination;
+  setPagination: Dispatch<SetStateAction<IPagination>>;
 }
 
 export interface IPagination {

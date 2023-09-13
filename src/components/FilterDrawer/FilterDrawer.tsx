@@ -7,7 +7,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {styled} from '@mui/material/styles';
 import {IFilterDrawerProps} from "./types";
 import {DateRange} from "../DateRange";
-import {INITIAL_DATE_RANGE} from "../App";
+import {INITIAL_DATE_RANGE} from "../utils";
 
 export const DRAWER_WIDTH = 320;
 
